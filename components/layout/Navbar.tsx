@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Tool, Bell, ChevronDown } from 'lucide-react'
+import { Menu, X, Wrench, Bell, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { clsx } from 'clsx'
 
@@ -17,7 +17,7 @@ export default function Navbar({ user }: NavbarProps) {
     <nav className="sticky top-0 z-50 bg-white border-b border-[var(--color-border)] h-14">
       <div className="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
 
-        {/* LOGO */}
+        {/* LOGO */}f
         <Link href="/" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-green-500 rounded-lg flex items-center justify-center">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white"
@@ -36,9 +36,9 @@ export default function Navbar({ user }: NavbarProps) {
           <Link href="/comment-ca-marche" className="text-sm font-medium text-muted hover:text-ink transition-colors">
             Comment ça marche
           </Link>
-          <Link href="/artisans/inscription" className="text-sm font-medium text-muted hover:text-ink transition-colors">
-            Devenir artisan
-          </Link>
+          <Link href="/auth/register?role=artisan" className="text-sm font-medium text-muted hover:text-ink transition-colors">
+  Devenir artisan
+</Link>
         </div>
 
         {/* CTA / USER */}

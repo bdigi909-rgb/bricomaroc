@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 export default function RegisterPage() {
@@ -11,7 +11,12 @@ export default function RegisterPage() {
 )
   const router = useRouter()
   const [step, setStep] = useState(1)
-  const [role, setRole] = useState<'client' | 'artisan'>('client')
+  
+// ...
+const searchParams = useSearchParams()
+const [role, setRole] = useState<'client' | 'artisan'>(
+  searchParams.get('role') === 'artisan' ? 'artisan' : 'client'
+)
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')

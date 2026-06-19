@@ -19,7 +19,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
 
   return (
     <div className="min-h-screen bg-[#F7F5F0]">
-      {/* NAVBAR */}
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg text-[#1B7A56]">
           🔧 BricoMaroc
@@ -29,10 +28,8 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
 
-        {/* CARTE PROFIL PRINCIPALE */}
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <div className="flex gap-5 items-start">
-            {/* AVATAR */}
             <div className="relative flex-shrink-0">
               {user.avatar_url ? (
                 <Image src={user.avatar_url} alt={user.full_name}
@@ -49,7 +46,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
               )}
             </div>
 
-            {/* INFOS PRINCIPALES */}
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl font-bold text-gray-900">{user.full_name}</h1>
@@ -63,7 +59,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
                 )}
               </div>
 
-              {/* CATÉGORIES */}
               <div className="flex gap-2 flex-wrap mt-2">
                 {categories.map((cat: any) => (
                   <span key={cat.categorie?.id}
@@ -73,7 +68,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
                 ))}
               </div>
 
-              {/* STATS */}
               <div className="flex gap-6 mt-3 text-sm">
                 <div className="text-center">
                   <div className="font-bold text-gray-900 text-lg">
@@ -102,7 +96,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
               </div>
             </div>
 
-            {/* TARIF + CTA */}
             <div className="text-right flex-shrink-0">
               <div className="text-2xl font-bold text-gray-900">
                 {(artisan as any).tarif_min}–{(artisan as any).tarif_max}
@@ -111,21 +104,20 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
               {(artisan as any).devis_gratuit && (
                 <div className="text-xs text-green-600 font-medium mt-1">Devis gratuit</div>
               )}
-              <button className="mt-3 w-full bg-[#1B7A56] text-white font-semibold
-                px-6 py-3 rounded-xl hover:bg-[#155f42] transition-colors">
+              <Link href={`/demandes/nouvelle?artisan=${(artisan as any).id}`}
+                className="mt-3 w-full bg-[#1B7A56] text-white font-semibold
+                px-6 py-3 rounded-xl hover:bg-[#155f42] transition-colors text-center block">
                 Contacter
-              </button>
+              </Link>
             </div>
           </div>
 
-          {/* BIO */}
           {(artisan as any).bio && (
             <p className="mt-4 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
               {(artisan as any).bio}
             </p>
           )}
 
-          {/* LOCALISATION + LANGUES */}
           <div className="flex gap-6 mt-4 text-sm text-gray-500 border-t border-gray-100 pt-4">
             <span>📍 {(artisan as any).ville} — rayon {(artisan as any).rayon_km} km</span>
             <span>🌐 {(artisan as any).langues?.join(', ')}</span>
@@ -135,7 +127,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
           </div>
         </div>
 
-        {/* DISPONIBILITÉS */}
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="font-bold text-gray-900 mb-4">Disponibilités</h2>
           <div className="flex gap-2 flex-wrap">
@@ -155,7 +146,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
           </p>
         </div>
 
-        {/* PORTFOLIO */}
         {portfolio.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="font-bold text-gray-900 mb-4">Réalisations</h2>
@@ -170,7 +160,6 @@ export default async function ArtisanPage({ params }: { params: { id: string } }
           </div>
         )}
 
-        {/* AVIS */}
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="font-bold text-gray-900 mb-4">
             Avis clients ({avis.length})
