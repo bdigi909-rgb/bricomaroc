@@ -44,13 +44,13 @@ export async function searchArtisans(
       .from('categories')
       .select('id')
       .eq('slug', categorie)
-      .single()
+      .single() as { data: { id: string } | null }
 
     if (cat) {
       const { data: artisanIds } = await supabase
         .from('artisan_categories')
         .select('artisan_id')
-        .eq('categorie_id', cat.id)
+        .eq('categorie_id', cat.id) as { data: { artisan_id: string }[] | null }
 
       const ids = artisanIds?.map(a => a.artisan_id) ?? []
       if (ids.length > 0) query = query.in('id', ids)
@@ -58,18 +58,18 @@ export async function searchArtisans(
   }
 
   const { data, count, error } = await query
-// Enrichir avec les données users
-const userIds = (data ?? []).map((a: any) => a.user_id)
-const { data: usersData } = await supabase
-  .from('users')
-  .select('*')
-  .in('id', userIds)
 
-const usersMap = Object.fromEntries((usersData ?? []).map((u: any) => [u.id, u]))
-const enrichedData = (data ?? []).map((a: any) => ({
-  ...a,
-  user: usersMap[a.user_id] ?? null
-}))
+  const userIds = (data ?? []).map((a: any) => a.user_id)
+  const { data: usersData } = await supabase
+    .from('users')
+    .select('*')
+    .in('id', userIds)
+
+  const usersMap = Object.fromEntries((usersData ?? []).map((u: any) => [u.id, u]))
+  const enrichedData = (data ?? []).map((a: any) => ({
+    ...a,
+    user: usersMap[a.user_id] ?? null
+  }))
 
   if (error) throw new Error(`searchArtisans: ${error.message}`)
 
@@ -119,19 +119,18 @@ export async function getArtisansUrgence(
   lng?: number
 ): Promise<ArtisanWithUser[]> {
   const supabase = createServerSupabaseClient()
-
   const { data: cat } = await supabase
     .from('categories')
     .select('id')
     .eq('slug', categorie_slug)
-    .single()
+    .single() as { data: { id: string } | null }
 
   if (!cat) return []
 
   const { data: artisanIds } = await supabase
     .from('artisan_categories')
     .select('artisan_id')
-    .eq('categorie_id', cat.id)
+    .eq('categorie_id', cat.id) as { data: { artisan_id: string }[] | null }
 
   const ids = artisanIds?.map(a => a.artisan_id) ?? []
   if (ids.length === 0) return []
@@ -159,7 +158,6 @@ export async function estimerBudgetIA(
 ): Promise<BudgetEstimation> {
   const supabase = createServerSupabaseClient()
 
-  // Récupère les devis historiques pour cette catégorie
   const { data: historique } = await supabase
     .from('devis')
     .select(`
@@ -170,10 +168,9 @@ export async function estimerBudgetIA(
     `)
     .eq('statut', 'accepted')
     .limit(100)
-
-  const devisCategorie = historique?.filter(
-    d => (d.demande as any)?.categorie?.slug === categorie_slug
-  ) ?? []
+const devisCategorie = (historique as any[] ?? []).filter(
+    (d: any) => d.demande?.categorie?.slug === categorie_slug
+  )
 
   const totaux = devisCategorie.map(d => d.total)
   const moyenne = totaux.length > 0
@@ -216,7 +213,7 @@ export async function getPlatformeStats() {
     supabase.from('avis').select('note_globale'),
   ])
 
-  const notes = avisRes.data?.map(a => a.note_globale) ?? []
+  const notes = (avisRes.data as any[] ?? []).map((a: any) => a.note_globale)
   const moyenneGlobale = notes.length > 0
     ? (notes.reduce((a, b) => a + b, 0) / notes.length).toFixed(1)
     : '4.8'

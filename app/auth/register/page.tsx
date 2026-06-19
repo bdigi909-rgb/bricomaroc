@@ -1,22 +1,21 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const router = useRouter()
   const [step, setStep] = useState(1)
-  
-// ...
-const searchParams = useSearchParams()
-const [role, setRole] = useState<'client' | 'artisan'>(
-  searchParams.get('role') === 'artisan' ? 'artisan' : 'client'
-)
+
+  const searchParams = useSearchParams()
+  const [role, setRole] = useState<'client' | 'artisan'>(
+    searchParams.get('role') === 'artisan' ? 'artisan' : 'client'
+  )
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -202,5 +201,13 @@ const [role, setRole] = useState<'client' | 'artisan'>(
         </p>
       </div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F5F0]" />}>
+      <RegisterPageContent />
+    </Suspense>
   )
 }
