@@ -24,7 +24,6 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
       if (!user) { router.push('/auth/login'); return }
       setUser(user)
 
-      // Charger la demande
       const { data: dem } = await supabase
         .from('demandes')
         .select(`
@@ -39,20 +38,28 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
       if (!dem) { router.push('/'); return }
       setDemande(dem)
 
-      // Charger les messages existants
+      // Charger les messages
       const { data: msgs } = await supabase
         .from('messages')
-        .select(`
-          *,
-          sender:users!messages_sender_id_fkey(full_name)
-        `)
+        .select('*')
         .eq('demande_id', params.id)
         .order('created_at', { ascending: true }) as { data: any[] | null }
 
-      setMessages(msgs ?? [])
+      // Enrichir avec les noms des senders
+      const senderIds = [...new Set((msgs ?? []).map((m: any) => m.sender_id))]
+      const { data: sendersData } = await supabase
+        .from('users')
+        .select('id, full_name')
+        .in('id', senderIds)
+      const sendersMap = Object.fromEntries((sendersData ?? []).map((u: any) => [u.id, u]))
+      const enrichedMsgs = (msgs ?? []).map((m: any) => ({
+        ...m,
+        sender: sendersMap[m.sender_id] ?? { full_name: 'Inconnu' }
+      }))
+
+      setMessages(enrichedMsgs)
       setLoading(false)
 
-      // Marquer comme lus
       await supabase
         .from('messages')
         .update({ lu: true })
@@ -62,7 +69,7 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
     load()
   }, [])
 
-  // Supabase Realtime — écoute les nouveaux messages
+  // Realtime
   useEffect(() => {
     const channel = supabase
       .channel(`messages:${params.id}`)
@@ -75,7 +82,6 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
           filter: `demande_id=eq.${params.id}`,
         },
         async (payload) => {
-          // Récupérer le sender name
           const { data: sender } = await supabase
             .from('users')
             .select('full_name')
@@ -91,7 +97,7 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
     return () => { supabase.removeChannel(channel) }
   }, [params.id])
 
-  // Scroll automatique vers le bas
+  // Scroll automatique
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])

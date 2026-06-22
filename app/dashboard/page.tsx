@@ -14,7 +14,6 @@ export default function DashboardArtisanPage() {
   const [artisan, setArtisan] = useState<any>(null)
   const [demandes, setDemandes] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [onglet, setOnglet] = useState<'pending' | 'accepted' | 'completed'>('pending')
 
   useEffect(() => {
     async function load() {
@@ -138,11 +137,23 @@ export default function DashboardArtisanPage() {
                       <span>🕐 {new Date(demande.created_at).toLocaleDateString('fr-FR')}</span>
                     </div>
                   </div>
-                  <button onClick={() => accepterDemande(demande.id)}
-                    className="bg-[#1B7A56] text-white text-sm font-semibold
-                      px-4 py-2 rounded-xl hover:bg-[#155f42] transition-colors flex-shrink-0">
-                    ✓ Accepter
-                  </button>
+                  <div className="flex flex-col gap-2 flex-shrink-0">
+                    <button onClick={() => accepterDemande(demande.id)}
+                      className="bg-[#1B7A56] text-white text-sm font-semibold
+                        px-4 py-2 rounded-xl hover:bg-[#155f42] transition-colors">
+                      ✓ Accepter
+                    </button>
+                    <Link href={`/dashboard/devis/${demande.id}`}
+                      className="bg-orange-500 text-white text-sm font-semibold
+                        px-4 py-2 rounded-xl hover:bg-orange-600 transition-colors text-center">
+                      📋 Devis
+                    </Link>
+                    <Link href={`/messages/${demande.id}`}
+                      className="border border-gray-200 text-gray-600 text-sm font-semibold
+                        px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors text-center">
+                      💬 Message
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
