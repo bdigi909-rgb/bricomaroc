@@ -67,7 +67,7 @@ export default function Navbar({ user }: NavbarProps) {
                 Connexion
               </Link>
               <Button variant="primary" size="sm" asChild>
-                <Link href="/demande/nouvelle">Trouver un artisan</Link>
+                <Link href="/demandes/nouvelle">Trouver un artisan</Link>
               </Button>
             </>
           )}
@@ -103,7 +103,7 @@ export default function Navbar({ user }: NavbarProps) {
             ))}
             <div className="pt-2">
               <Button variant="primary" size="md" fullWidth asChild>
-                <Link href="/demande/nouvelle" onClick={() => setMenuOpen(false)}>
+                <Link href="/demandes/nouvelle" onClick={() => setMenuOpen(false)}>
                   Publier une demande
                 </Link>
               </Button>
