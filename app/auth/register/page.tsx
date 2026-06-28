@@ -70,6 +70,17 @@ function RegisterPageContent() {
     }
 
     setSuccess(true)
+    // Envoyer email de bienvenue
+await fetch('/api/email', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    to: email,
+    subject: 'Bienvenue sur BricoMaroc ! 🔧',
+    type: 'inscription',
+    data: { nom: fullName, role },
+  }),
+})
     setLoading(false)
   }
 

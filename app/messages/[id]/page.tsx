@@ -102,7 +102,7 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  async function sendMessage() {
+async function sendMessage() {
     if (!newMessage.trim() || !user || !demande) return
     setSending(true)
 
@@ -110,7 +110,13 @@ export default function MessagesPage({ params }: { params: { id: string } }) {
       ? demande.artisan?.user_id
       : demande.client_id
 
-    await supabase.from('messages').insert({
+    if (!receiverId) {
+      alert('Aucun artisan assigne a cette demande.')
+      setSending(false)
+      return
+    }
+
+ await supabase.from('messages').insert({
       demande_id: params.id,
       sender_id: user.id,
       receiver_id: receiverId,

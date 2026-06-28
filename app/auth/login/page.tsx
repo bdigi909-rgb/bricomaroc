@@ -1,19 +1,22 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function LoginPage() {
+function LoginContent() {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
- const router = useRouter()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
   async function handleLogin() {
     setLoading(true)
     setError('')
@@ -22,8 +25,17 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/')
-      router.refresh()
+      const redirect = searchParams.get('redirect')
+      await fetch('/api/logs', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    action: 'connexion',
+    userId: null,
+    details: { email },
+  }),
+})
+      router.push(redirect ?? '/dashboard')
     }
   }
 
@@ -35,7 +47,6 @@ export default function LoginPage() {
           <h1 className="text-xl font-bold text-gray-900 mt-4">Connexion</h1>
           <p className="text-gray-500 text-sm mt-1">Accédez à votre espace</p>
         </div>
-
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -44,6 +55,7 @@ export default function LoginPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="vous@exemple.ma"
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#1B7A56]"
             />
@@ -55,17 +67,22 @@ export default function LoginPage() {
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#1B7A56]"
             />
           </div>
-
+          <div className="text-right">
+            <Link href="/reset-password"
+              className="text-xs text-[#1B7A56] hover:underline">
+              Mot de passe oublié ?
+            </Link>
+          </div>
           {error && (
             <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">
               {error}
             </div>
           )}
-
           <button
             onClick={handleLogin}
             disabled={loading}
@@ -75,7 +92,6 @@ export default function LoginPage() {
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </div>
-
         <p className="text-center text-sm text-gray-500 mt-6">
           Pas encore de compte ?{' '}
           <Link href="/auth/register" className="text-[#1B7A56] font-semibold hover:underline">
@@ -84,5 +100,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F5F0]" />}>
+      <LoginContent />
+    </Suspense>
   )
 }

@@ -63,7 +63,7 @@ export default function CreerDevisPage({ params }: { params: { id: string } }) {
     load()
   }, [])
 
-  async function envoyerDevis() {
+ async function envoyerDevis() {
     setSending(true)
     setError('')
 
@@ -85,6 +85,15 @@ export default function CreerDevisPage({ params }: { params: { id: string } }) {
       return
     }
 
+    // Notification au client
+    await supabase.from('notifications').insert({
+      user_id: demande.client_id,
+      titre: 'Nouveau devis reçu 📋',
+      message: `Un artisan vous a envoyé un devis de ${total} MAD pour "${demande.titre}".`,
+      type: 'devis',
+      lien: `/espace-client`,
+    })
+
     // Mettre à jour le statut de la demande
     await supabase.from('demandes').update({
       artisan_id: artisan.id,
@@ -101,6 +110,31 @@ export default function CreerDevisPage({ params }: { params: { id: string } }) {
     })
 
     setSuccess(true)
+    // Envoyer email au client
+const { data: clientUser } = await supabase
+  .from('users').select('email, full_name').eq('id', demande.client_id).single() as { data: any }
+
+if (clientUser?.email) {
+  await fetch('/api/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: clientUser.email,
+      subject: `Nouveau devis pour "${demande.titre}" — BricoMaroc`,
+      type: 'nouveau_devis',
+      data: {
+        clientNom: clientUser.full_name,
+        artisanNom: artisan?.user?.full_name ?? 'Artisan',
+        titreDemande: demande.titre,
+        mainOeuvre,
+        materiaux,
+        deplacement,
+        total,
+        valableJours,
+      },
+    }),
+  })
+}
     setSending(false)
   }
 

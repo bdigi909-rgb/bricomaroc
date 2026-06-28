@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "find_artisan": "Trouver un artisan",
+    "carte": "Carte",
+    "blog": "Blog",
+    "how_it_works": "Comment ça marche",
+    "become_artisan": "Devenir artisan",
+    "support": "Support",
+    "estimation": "Estimation",
+    "login": "Connexion",
+    "post_request": "Trouver un artisan"
+  },
+  "home": {
+    "hero_title": "Trouvez un artisan de confiance, près de chez vous",
+    "hero_subtitle": "Plombier, électricien, peintre… Comparez les profils, lisez les avis et réservez en quelques minutes.",
+    "search_placeholder": "Plomberie, électricité, peinture…",
+    "search_btn": "Rechercher",
+    "artisans_verified": "artisans vérifiés au Maroc",
+    "avg_rating": "Note moyenne",
+    "missions_done": "Missions réalisées"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "send": "Envoyer",
+    "continue": "Continuer"
+  }
+}

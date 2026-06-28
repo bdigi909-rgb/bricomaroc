@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "find_artisan": "Qlab artisan",
+    "carte": "Carta",
+    "blog": "Blog",
+    "how_it_works": "Kifash khdam",
+    "become_artisan": "Wl artisan",
+    "support": "Mosaada",
+    "estimation": "Taqdir",
+    "login": "Dkhol",
+    "post_request": "Qlab artisan"
+  },
+  "home": {
+    "hero_title": "Qlab artisan f blask b toqa",
+    "hero_subtitle": "Sabbak, kahrabaji, naqqach… Qaren lprofil, qra lavis w reserve f dqiqa.",
+    "search_placeholder": "Sabbaka, kahrabiya, dhan…",
+    "search_btn": "Qlab",
+    "artisans_verified": "artisan mowathaq f lmaghrib",
+    "avg_rating": "Mouyaal lnota",
+    "missions_done": "mission mdarba"
+  },
+  "common": {
+    "loading": "Tsan...",
+    "save": "Sauvgardi",
+    "cancel": "Annuli",
+    "back": "Rja3",
+    "send": "Sifet",
+    "continue": "Kammel"
+  }
+}

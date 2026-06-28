@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "find_artisan": "ابحث عن حرفي",
+    "carte": "الخريطة",
+    "blog": "المدونة",
+    "how_it_works": "كيف يعمل",
+    "become_artisan": "كن حرفياً",
+    "support": "الدعم",
+    "estimation": "تقدير التكلفة",
+    "login": "تسجيل الدخول",
+    "post_request": "ابحث عن حرفي"
+  },
+  "home": {
+    "hero_title": "ابحث عن حرفي موثوق قريب منك",
+    "hero_subtitle": "سباك، كهربائي، نقاش… قارن الملفات، اقرأ التقييمات واحجز في دقائق.",
+    "search_placeholder": "سباكة، كهرباء، دهان…",
+    "search_btn": "بحث",
+    "artisans_verified": "حرفي موثق في المغرب",
+    "avg_rating": "متوسط التقييم",
+    "missions_done": "مهمة منجزة"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "back": "رجوع",
+    "send": "إرسال",
+    "continue": "متابعة"
+  }
+}

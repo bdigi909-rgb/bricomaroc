@@ -2,9 +2,10 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Wrench, Bell, ChevronDown } from 'lucide-react'
+import { Menu, X, Bell, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui'
-import { clsx } from 'clsx'
+import DarkModeToggle from '@/components/ui/DarkModeToggle'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 
 interface NavbarProps {
   user?: { full_name: string; role: string } | null
@@ -17,7 +18,7 @@ export default function Navbar({ user }: NavbarProps) {
     <nav className="sticky top-0 z-50 bg-white border-b border-[var(--color-border)] h-14">
       <div className="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
 
-        {/* LOGO */}f
+        {/* LOGO */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-green-500 rounded-lg flex items-center justify-center">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white"
@@ -33,26 +34,38 @@ export default function Navbar({ user }: NavbarProps) {
           <Link href="/artisans" className="text-sm font-medium text-muted hover:text-ink transition-colors">
             Trouver un artisan
           </Link>
+          <Link href="/carte" className="text-sm font-medium text-muted hover:text-ink transition-colors">
+            Carte
+          </Link>
+          <Link href="/blog" className="text-sm font-medium text-muted hover:text-ink transition-colors">
+            Blog
+          </Link>
           <Link href="/comment-ca-marche" className="text-sm font-medium text-muted hover:text-ink transition-colors">
-            Comment ça marche
+            Comment ca marche
           </Link>
           <Link href="/auth/register?role=artisan" className="text-sm font-medium text-muted hover:text-ink transition-colors">
-  Devenir artisan
-</Link>
+            Devenir artisan
+          </Link>
+          <Link href="/support" className="text-sm font-medium text-muted hover:text-ink transition-colors">
+            Support
+          </Link>
+          <Link href="/estimation" className="text-sm font-medium text-muted hover:text-ink transition-colors">
+            Estimation
+          </Link>
         </div>
 
         {/* CTA / USER */}
         <div className="flex items-center gap-2">
+          <LanguageSelector />
+          <DarkModeToggle />
           {user ? (
             <>
-              {/* Notifications */}
               <button className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-sand transition-colors">
                 <Bell size={18} className="text-muted" />
                 <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-orange-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
                   2
                 </span>
               </button>
-              {/* User menu */}
               <button className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-sand transition-colors">
                 <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center text-xs font-bold text-green-700">
                   {user.full_name.charAt(0).toUpperCase()}
@@ -85,12 +98,17 @@ export default function Navbar({ user }: NavbarProps) {
       {/* MENU MOBILE DROPDOWN */}
       {menuOpen && (
         <div className="md:hidden absolute top-14 inset-x-0 bg-white border-b border-[var(--color-border)] shadow-card-hover animate-fade-in z-40">
-          <div className="flex flex-direction-col p-4 gap-1">
+          <div className="flex flex-col p-4 gap-1">
             {[
-              { href: '/artisans',          label: 'Trouver un artisan' },
-              { href: '/comment-ca-marche', label: 'Comment ça marche' },
-              { href: '/artisans/inscription', label: 'Devenir artisan' },
-              { href: '/auth/login',        label: 'Connexion' },
+              { href: '/artisans', label: 'Trouver un artisan' },
+              { href: '/carte', label: 'Carte' },
+              { href: '/blog', label: 'Blog' },
+              { href: '/comment-ca-marche', label: 'Comment ca marche' },
+              { href: '/auth/register?role=artisan', label: 'Devenir artisan' },
+              { href: '/support', label: 'Support' },
+              { href: '/estimation', label: 'Estimation' },
+              { href: '/a-propos', label: 'A propos' },
+              { href: '/auth/login', label: 'Connexion' },
             ].map(link => (
               <Link
                 key={link.href}

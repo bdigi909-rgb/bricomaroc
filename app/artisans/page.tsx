@@ -4,6 +4,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import BadgeArtisan from '@/components/ui/BadgeArtisan'
 
 function ArtisansSearchContent() {
   const supabase = createBrowserClient(
@@ -60,13 +61,11 @@ function ArtisansSearchContent() {
 
     const { data } = await query
 
-    // Enrichir avec users (jointure fiable)
     const userIds = (data ?? []).map((a: any) => a.user_id)
     const { data: usersData } = await supabase.from('users').select('*').in('id', userIds)
     const usersMap = Object.fromEntries((usersData ?? []).map((u: any) => [u.id, u]))
     let enriched = (data ?? []).map((a: any) => ({ ...a, user: usersMap[a.user_id] ?? null }))
 
-    // Filtrer par catégorie si sélectionnée
     if (categorieSlug) {
       const cat = categories.find(c => c.slug === categorieSlug)
       if (cat) {
@@ -82,10 +81,16 @@ function ArtisansSearchContent() {
 
   return (
     <div className="min-h-screen bg-[#F7F5F0]">
-      {/* NAVBAR */}
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-[#1B7A56]">🔧 BricoMaroc</Link>
-        <Link href="/" className="text-sm text-gray-500 hover:text-gray-800">← Accueil</Link>
+        <div className="flex items-center gap-3">
+          <Link href="/comparer"
+            className="text-sm border border-gray-200 text-gray-600 font-semibold
+              px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+            ⚖️ Comparer
+          </Link>
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-800">← Accueil</Link>
+        </div>
       </nav>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -97,7 +102,6 @@ function ArtisansSearchContent() {
           <div className="col-span-1">
             <div className="bg-white rounded-2xl p-5 shadow-sm sticky top-4 space-y-5">
 
-              {/* CATÉGORIE */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Métier</label>
                 <select value={categorieSlug} onChange={e => setCategorieSlug(e.target.value)}
@@ -110,7 +114,6 @@ function ArtisansSearchContent() {
                 </select>
               </div>
 
-              {/* VILLE */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Ville</label>
                 <select value={ville} onChange={e => setVille(e.target.value)}
@@ -120,7 +123,6 @@ function ArtisansSearchContent() {
                 </select>
               </div>
 
-              {/* NOTE MIN */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Note minimum
@@ -137,7 +139,6 @@ function ArtisansSearchContent() {
                 </div>
               </div>
 
-              {/* DISPONIBLE */}
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="dispo" checked={disponibleOnly}
                   onChange={e => setDisponibleOnly(e.target.checked)}
@@ -147,7 +148,6 @@ function ArtisansSearchContent() {
                 </label>
               </div>
 
-              {/* TRI */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Trier par</label>
                 <select value={tri} onChange={e => setTri(e.target.value as any)}
@@ -212,6 +212,7 @@ function ArtisansSearchContent() {
                               <span className="text-xs bg-green-100 text-green-700
                                 px-2 py-0.5 rounded-full">✓ Vérifié</span>
                             )}
+                            <BadgeArtisan badge={artisan.badge_special} />
                           </div>
                           <p className="text-sm text-gray-500 mt-0.5 line-clamp-1">
                             {artisan.bio}

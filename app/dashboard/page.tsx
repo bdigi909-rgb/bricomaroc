@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Notifications from '@/components/layout/Notifications'
 
 export default function DashboardArtisanPage() {
   const supabase = createBrowserClient(
@@ -74,10 +75,48 @@ export default function DashboardArtisanPage() {
     <div className="min-h-screen bg-[#F7F5F0]">
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-[#1B7A56]">🔧 BricoMaroc</Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600">
             {artisan?.disponible ? '🟢 Disponible' : '🔴 Indisponible'}
           </span>
+          {artisan?.plan && artisan.plan !== 'free' && (
+            <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+              artisan.plan === 'elite' ? 'bg-yellow-400 text-gray-900' : 'bg-[#1B7A56] text-white'
+            }`}>
+              {artisan.plan === 'elite' ? '👑 Élite' : '⭐ Pro'}
+            </span>
+          )}
+          <Link href="/profil"
+            className="text-xs border border-gray-200 text-gray-600 font-semibold
+              px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+            👤 Mon profil
+          </Link>
+          <Link href="/parrainage"
+            className="text-xs border border-gray-200 text-gray-600 font-semibold
+              px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+            🎁 Parrainage
+          </Link>
+          <Link href="/carte-id"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  🪪 Ma carte
+</Link>
+          <Link href="/premium"
+            className="text-xs bg-yellow-400 text-gray-900 font-semibold
+              px-3 py-1.5 rounded-lg hover:bg-yellow-500 transition-colors">
+            ⭐ Premium
+          </Link>
+          <Link href="/dashboard/finances"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  💰 Finances
+</Link>
+<Link href="/dashboard/agenda"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  📅 Agenda
+</Link>
+          {artisan && <Notifications userId={artisan.user_id} />}
           <button onClick={async () => {
             await supabase.auth.signOut()
             router.push('/')
@@ -85,10 +124,9 @@ export default function DashboardArtisanPage() {
             Déconnexion
           </button>
         </div>
-      </nav>
+             </nav>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* STATS */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Note moyenne', value: artisan?.note_moyenne?.toFixed(1) ?? '0.0', icon: '⭐' },
@@ -152,6 +190,11 @@ export default function DashboardArtisanPage() {
                       className="border border-gray-200 text-gray-600 text-sm font-semibold
                         px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors text-center">
                       💬 Message
+                    </Link>
+                    <Link href={`/suivi/${demande.id}`}
+                      className="border border-blue-200 text-blue-600 text-sm font-semibold
+                        px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors text-center">
+                      📍 Suivi
                     </Link>
                   </div>
                 </div>

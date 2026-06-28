@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Notifications from '@/components/layout/Notifications'
+import PushNotifications from '@/components/ui/PushNotifications'
 
 export default function EspaceClientPage() {
   const supabase = createBrowserClient(
@@ -27,12 +29,7 @@ export default function EspaceClientPage() {
         .select(`
           *,
           categorie:categories(nom, icone),
-          artisan:artisans(
-            note_moyenne,
-            tarif_min,
-            tarif_max,
-            user_id
-          )
+          artisan:artisans(note_moyenne, tarif_min, tarif_max, user_id)
         `)
         .eq('client_id', user.id)
         .order('created_at', { ascending: false })
@@ -44,9 +41,7 @@ export default function EspaceClientPage() {
   }, [])
 
   async function annulerDemande(demandeId: string) {
-    await supabase.from('demandes').update({
-      statut: 'cancelled',
-    }).eq('id', demandeId)
+    await supabase.from('demandes').update({ statut: 'cancelled' }).eq('id', demandeId)
     setDemandes(prev => prev.map(d =>
       d.id === demandeId ? { ...d, statut: 'cancelled' } : d
     ))
@@ -88,16 +83,46 @@ export default function EspaceClientPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F5F0]">
-      {/* NAVBAR */}
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-[#1B7A56]">🔧 BricoMaroc</Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600">👤 {user?.email}</span>
+          <Link href="/profil-client"
+            className="text-xs border border-gray-200 text-gray-600 font-semibold
+              px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+            👤 Mon profil
+          </Link>
+          <Link href="/favoris"
+            className="text-xs border border-gray-200 text-gray-600 font-semibold
+              px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+            ❤️ Favoris
+          </Link>
           <Link href="/demandes/nouvelle"
             className="bg-[#1B7A56] text-white text-sm font-semibold
               px-4 py-2 rounded-xl hover:bg-[#155f42] transition-colors">
             + Nouvelle demande
+            <Link href="/espace-client/finances"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  💳 Mes paiements
+</Link>
+<Link href="/fidelite"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  🎁 Fidélité
+</Link>
+<Link href="/remboursement"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  💸 Remboursement
+</Link>
           </Link>
+          <Link href="/contrat"
+  className="text-xs border border-gray-200 text-gray-600 font-semibold
+    px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+  📄 Contrat
+</Link>
+          {user && <Notifications userId={user.id} />}
           <button onClick={async () => {
             await supabase.auth.signOut()
             router.push('/')
@@ -108,11 +133,10 @@ export default function EspaceClientPage() {
       </nav>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-
-        {/* HEADER */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Mes demandes</h1>
+{user && <PushNotifications userId={user.id} />}
             <p className="text-gray-500 text-sm mt-1">
               {demandes.length} demande{demandes.length > 1 ? 's' : ''} au total
             </p>
@@ -124,7 +148,6 @@ export default function EspaceClientPage() {
           </Link>
         </div>
 
-        {/* STATS RAPIDES */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             { label: 'En attente', count: demandes.filter(d => d.statut === 'pending').length, color: 'text-yellow-600', bg: 'bg-yellow-50' },
@@ -138,7 +161,6 @@ export default function EspaceClientPage() {
           ))}
         </div>
 
-        {/* ONGLETS */}
         <div className="flex gap-2 mb-6">
           {[
             { key: 'pending', label: 'En attente' },
@@ -166,7 +188,6 @@ export default function EspaceClientPage() {
           ))}
         </div>
 
-        {/* LISTE */}
         {demandesFiltrees.length === 0 ? (
           <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
             <div className="text-4xl mb-3">📭</div>
@@ -184,7 +205,6 @@ export default function EspaceClientPage() {
                 className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    {/* HEADER */}
                     <div className="flex items-center gap-2 flex-wrap mb-2">
                       <span className="text-lg">{demande.categorie?.icone}</span>
                       <h3 className="font-bold text-gray-900">{demande.titre}</h3>
@@ -197,12 +217,10 @@ export default function EspaceClientPage() {
                       </span>
                     </div>
 
-                    {/* DESCRIPTION */}
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                       {demande.description}
                     </p>
 
-                    {/* INFOS */}
                     <div className="flex gap-4 text-xs text-gray-500 flex-wrap">
                       <span>📍 {demande.quartier || demande.adresse}</span>
                       {demande.budget_min && (
@@ -214,7 +232,6 @@ export default function EspaceClientPage() {
                       <span>🕐 {new Date(demande.created_at).toLocaleDateString('fr-FR')}</span>
                     </div>
 
-                    {/* ARTISAN ASSIGNÉ */}
                     {demande.artisan && demande.statut !== 'pending' && (
                       <div className="mt-3 p-3 bg-green-50 rounded-xl text-sm">
                         <span className="font-medium text-green-700">
@@ -225,8 +242,17 @@ export default function EspaceClientPage() {
                     )}
                   </div>
 
-                  {/* ACTIONS */}
                   <div className="flex flex-col gap-2 flex-shrink-0">
+                    <Link href={`/suivi/${demande.id}`}
+                      className="text-xs border border-gray-200 text-gray-600 font-medium
+                        px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors text-center">
+                      📍 Suivi
+                    </Link>
+                    <Link href={`/messages/${demande.id}`}
+                      className="text-xs border border-blue-200 text-blue-600 font-medium
+                        px-3 py-2 rounded-xl hover:bg-blue-50 transition-colors text-center">
+                      💬 Message
+                    </Link>
                     {demande.statut === 'pending' && (
                       <button onClick={() => annulerDemande(demande.id)}
                         className="text-xs border border-red-200 text-red-500 font-medium
@@ -235,7 +261,18 @@ export default function EspaceClientPage() {
                       </button>
                     )}
                     {demande.statut === 'completed' && (
-                      <span className="text-xs text-green-600 font-medium">✅ Terminée</span>
+                      <>
+                        <Link href={`/avis/${demande.id}`}
+                          className="text-xs bg-yellow-400 text-gray-900 font-semibold
+                            px-3 py-2 rounded-xl hover:bg-yellow-500 transition-colors text-center">
+                          ⭐ Avis
+                        </Link>
+                        <Link href={`/paiement/${demande.id}`}
+                          className="text-xs bg-[#1B7A56] text-white font-semibold
+                            px-3 py-2 rounded-xl hover:bg-[#155f42] transition-colors text-center">
+                          💳 Payer
+                        </Link>
+                      </>
                     )}
                   </div>
                 </div>
