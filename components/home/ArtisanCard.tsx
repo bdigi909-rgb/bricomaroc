@@ -1,119 +1,49 @@
-'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Search, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui'
+import Link from 'next/link'
+import BadgeArtisan from '@/components/ui/BadgeArtisan'
 
-const VILLES = ['Marrakech', 'Casablanca', 'Rabat', 'Fès', 'Agadir', 'Tanger', 'Meknès', 'Oujda']
-
-const SUGGESTIONS = [
-  'Plomberie', 'Électricité', 'Peinture', 'Climatisation',
-  'Menuiserie', 'Carrelage', 'Maçonnerie', 'Jardinage', 'Serrurerie', 'Bricolage'
-]
-
-export default function SearchBar() {
-  const router = useRouter()
-  const [query, setQuery] = useState('')
-  const [ville, setVille] = useState('Marrakech')
-  const [showSuggestions, setShowSuggestions] = useState(false)
-
-  const suggestionsFiltrees = query.length > 0
-    ? SUGGESTIONS.filter(s => s.toLowerCase().includes(query.toLowerCase()))
-    : SUGGESTIONS
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (query) params.set('q', query)
-    if (ville) params.set('ville', ville)
-    router.push(`/artisans?${params.toString()}`)
-    setShowSuggestions(false)
-  }
-
-  function selectSuggestion(suggestion: string) {
-    setQuery(suggestion)
-    setShowSuggestions(false)
-    const params = new URLSearchParams()
-    params.set('q', suggestion)
-    params.set('ville', ville)
-    router.push(`/artisans?${params.toString()}`)
-  }
-
+export default function ArtisanCard({ artisan }: { artisan: any }) {
   return (
-    <div className="relative">
-      <form
-        onSubmit={handleSearch}
-        className="flex gap-2 flex-wrap bg-white rounded-2xl p-2 shadow-card-hover"
-      >
-        {/* RECHERCHE MÉTIER */}
-        <div className="flex-[2] min-w-[160px] flex items-center gap-2 border border-[var(--color-border)] rounded-xl px-3 h-11">
-          <Search size={16} className="text-muted flex-shrink-0" />
-          <input
-            type="text"
-            value={query}
-            onChange={e => { setQuery(e.target.value); setShowSuggestions(true) }}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-            placeholder="Plomberie, électricité, peinture…"
-            className="flex-1 text-sm text-ink placeholder:text-muted bg-transparent outline-none"
-          />
-          {query && (
-            <button type="button" onClick={() => setQuery('')}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none">
-              ×
-            </button>
-          )}
+    <Link href={`/artisans/${artisan.id}`}
+      className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all
+        border border-gray-100 hover:border-[#1B7A56] block">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="w-12 h-12 rounded-2xl bg-[#1B7A56] text-white text-lg
+          font-bold flex items-center justify-center flex-shrink-0">
+          {(artisan.user?.full_name ?? 'A')[0].toUpperCase()}
         </div>
-
-        {/* VILLE */}
-        <div className="flex-1 min-w-[130px] flex items-center gap-2 border border-[var(--color-border)] rounded-xl px-3 h-11">
-          <MapPin size={15} className="text-muted flex-shrink-0" />
-          <select
-            value={ville}
-            onChange={e => setVille(e.target.value)}
-            className="flex-1 text-sm text-ink bg-transparent outline-none cursor-pointer appearance-none"
-          >
-            {VILLES.map(v => (
-              <option key={v} value={v}>{v}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* BOUTON */}
-        <Button type="submit" variant="primary" size="md" className="h-11 min-w-[110px]">
-          Rechercher
-        </Button>
-      </form>
-
-      {/* SUGGESTIONS */}
-      {showSuggestions && suggestionsFiltrees.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl
-          border border-gray-100 z-50 overflow-hidden">
-          <div className="px-4 py-2 border-b border-gray-50">
-            <p className="text-xs text-gray-400 font-medium">Suggestions populaires</p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="font-bold text-gray-900 truncate">
+              {artisan.user?.full_name ?? 'Artisan'}
+            </h3>
+            {artisan.cin_verifie && (
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5
+                rounded-full font-medium flex-shrink-0">
+                ✓ Verifie
+              </span>
+            )}
           </div>
-          <div className="py-2">
-            {suggestionsFiltrees.map(suggestion => (
-              <button key={suggestion}
-                onMouseDown={() => selectSuggestion(suggestion)}
-                className="w-full text-left px-4 py-2.5 text-sm text-gray-700
-                  hover:bg-gray-50 flex items-center gap-3 transition-colors">
-                <Search size={14} className="text-gray-400 flex-shrink-0" />
-                <span>{suggestion}</span>
-                {query && suggestion.toLowerCase().includes(query.toLowerCase()) && (
-                  <span className="ml-auto text-xs text-[#1B7A56] font-medium">→</span>
-                )}
-              </button>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {artisan.categories?.slice(0, 2).map((cat: any, i: number) => (
+              <span key={i} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                {cat.categorie?.icone} {cat.categorie?.nom}
+              </span>
             ))}
           </div>
-          <div className="px-4 py-2 border-t border-gray-50 bg-gray-50">
-            <button onMouseDown={handleSearch}
-              className="text-xs text-[#1B7A56] font-medium hover:underline">
-              Voir tous les artisans à {ville} →
-            </button>
-          </div>
         </div>
-      )}
-    </div>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+        <span>📍 {artisan.ville}</span>
+        <span>⭐ {artisan.note_moyenne?.toFixed(1)} ({artisan.nb_avis} avis)</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-semibold text-[#1B7A56]">
+          {artisan.tarif_min}–{artisan.tarif_max} MAD/h
+        </span>
+        <BadgeArtisan badge={artisan.badge_special} />
+      </div>
+    </Link>
   )
 }

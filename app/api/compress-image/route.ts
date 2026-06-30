@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     const compressedSize = compressed.length
     const ratio = Math.round((1 - compressedSize / originalSize) * 100)
 
-    return new NextResponse(compressed, {
+  return new NextResponse(compressed as unknown as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': 'image/webp',

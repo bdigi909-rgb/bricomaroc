@@ -107,7 +107,7 @@ export default function ArtisanPage({ params }: { params: { id: string } }) {
   const schemaData = schemaArtisan(artisan, userArtisan)
 
   return (
-   return (
+  
     <div className="min-h-screen bg-[#F7F5F0]">
       <script
         type="application/ld+json"

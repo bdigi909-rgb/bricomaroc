@@ -1,38 +1,19 @@
-'use client'
-import { useState, useEffect } from 'react'
+export default function BadgeArtisan({ badge }: { badge?: string | null }) {
+  if (!badge) return null
 
-export default function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    const saved = localStorage.getItem('darkMode')
-    if (saved === 'true') {
-      document.documentElement.classList.add('dark')
-      setIsDark(true)
-    }
-  }, [])
-
-  function toggle() {
-    if (isDark) {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('darkMode', 'false')
-      setIsDark(false)
-    } else {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('darkMode', 'true')
-      setIsDark(true)
-    }
+  const badges: Record<string, { label: string; color: string; icon: string }> = {
+    nouveau: { label: 'Nouveau', color: 'bg-blue-100 text-blue-700', icon: '🌟' },
+    fiable: { label: 'Fiable', color: 'bg-green-100 text-green-700', icon: '✅' },
+    expert: { label: 'Expert', color: 'bg-purple-100 text-purple-700', icon: '🏆' },
+    top_mois: { label: 'Top du mois', color: 'bg-yellow-100 text-yellow-700', icon: '👑' },
   }
 
-  if (!mounted) return null
+  const b = badges[badge]
+  if (!b) return null
 
   return (
-    <button onClick={toggle}
-      className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-600"
-      title={isDark ? 'Mode clair' : 'Mode sombre'}>
-      {isDark ? '☀️' : '🌙'}
-    </button>
+    <span className={`text-xs px-2 py-1 rounded-full font-medium ${b.color}`}>
+      {b.icon} {b.label}
+    </span>
   )
 }
