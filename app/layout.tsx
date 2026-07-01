@@ -10,10 +10,13 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: {
-    default: 'BricoMaroc - Artisans verifies au Maroc',
-    template: '%s | BricoMaroc',
-  },
+ title: {
+  default: 'BricoMaroc - Artisans verifies au Maroc',
+  template: '%s | BricoMaroc',
+},
+verification: {
+  google: 'fLA8KNnzXHeLG-0WgXGYJOOvltVCLMHyyMZH0BBuV_g',
+},
   description: 'Trouvez un plombier, electricien, peintre ou menuisier qualifie et verifie pres de chez vous au Maroc. Avis clients, tarifs transparents, intervention rapide.',
   keywords: [
     'artisan Maroc', 'plombier Marrakech', 'electricien Casablanca',
