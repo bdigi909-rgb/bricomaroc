@@ -3,14 +3,16 @@ import webpush from 'web-push'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-)
 
 export async function POST(req: NextRequest) {
   try {
+    if (process.env.VAPID_EMAIL && process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  )
+}
     const { action, subscription, userId, title, body, url } = await req.json()
 
     const cookieStore = cookies()
