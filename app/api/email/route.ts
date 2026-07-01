@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { rateLimit } from '@/lib/rateLimit'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+const resend = new Resend(process.env.RESEND_API_KEY ?? 're_placeholder')
 
 export async function POST(req: NextRequest) {
   // Rate limiting — max 5 emails par minute par IP
